@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'models/order.dart';
+import 'models/bot.dart';
 import 'widgets/order_list.dart';
+import 'widgets/bot_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Order> orders = [];
+  List<Bot> bots = [];
   int orderIdCounter = 1;
 
   void addNormalOrder() {
@@ -46,6 +49,20 @@ class _MyHomePageState extends State<MyHomePage> {
       final vipOrder = Order(id: orderIdCounter++, type: 'VIP');
       orders.insert(0, vipOrder);
     });
+  }
+
+  void addBot() {
+    setState(() {
+      bots.add(Bot(id: bots.length + 1));
+    });
+  }
+
+  void removeBot() {
+    if (bots.isNotEmpty) {
+      setState(() {
+        bots.removeLast();
+      });
+    }
   }
 
   @override
@@ -63,7 +80,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          OrderList(orders: orders),
+          Expanded(
+            child: Column(
+              children: [
+                OrderList(orders: orders),
+                BotList(bots: bots),
+              ],
+            ),
+          ),
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -77,25 +101,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Column(
               children: [
-                ElevatedButton.icon(
-                  onPressed: addNormalOrder,
-                  icon: Icon(Icons.add_shopping_cart),
-                  label: Text('New Normal Order'),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: addNormalOrder,
+                      icon: Icon(Icons.add_shopping_cart),
+                      label: Text('New Normal Order'),
+                      style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: addVIPOrder,
+                      icon: Icon(Icons.star),
+                      label: Text('New VIP Order'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton.icon(
-                  onPressed: addVIPOrder,
-                  icon: Icon(Icons.star),
-                  label: Text('New VIP Order'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: addBot,
+                      icon: Icon(Icons.add),
+                      label: Text('Add Bot'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: removeBot,
+                      icon: Icon(Icons.remove),
+                      label: Text('Remove Bot'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
