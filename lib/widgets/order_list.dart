@@ -3,8 +3,11 @@ import '../models/order.dart';
 
 class OrderList extends StatelessWidget {
   final List<Order> orders;
-  
-  const OrderList({Key? key, required this.orders}) : super(key: key);
+
+  const OrderList({
+    super.key,
+    required this.orders,
+  });
 
   List<Order> getSortedOrders() {
     return List<Order>.from(orders)
@@ -33,7 +36,8 @@ class OrderList extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade300)),
                 ),
                 child: Row(
                   children: [
@@ -58,16 +62,14 @@ class OrderList extends StatelessWidget {
                     return Card(
                       elevation: 2,
                       margin: EdgeInsets.symmetric(vertical: 4),
-                      color: order.type == 'VIP' 
-                          ? Colors.amber.shade50 
+                      color: order.type == 'VIP'
+                          ? Colors.amber.shade50
                           : Colors.grey.shade50,
                       child: ListTile(
                         leading: Icon(
-                          order.type == 'VIP' 
-                              ? Icons.star 
-                              : Icons.fastfood,
-                          color: order.type == 'VIP' 
-                              ? Colors.amber 
+                          order.type == 'VIP' ? Icons.star : Icons.fastfood,
+                          color: order.type == 'VIP'
+                              ? Colors.amber
                               : Colors.grey[700],
                         ),
                         title: Text(

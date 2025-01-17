@@ -3,8 +3,11 @@ import '../models/bot.dart';
 
 class BotList extends StatelessWidget {
   final List<Bot> bots;
-  
-  const BotList({Key? key, required this.bots}) : super(key: key);
+
+  const BotList({
+    super.key,
+    required this.bots,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,8 @@ class BotList extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade300)),
                 ),
                 child: Row(
                   children: [
@@ -48,8 +52,8 @@ class BotList extends StatelessWidget {
                     return Card(
                       elevation: 2,
                       margin: EdgeInsets.symmetric(vertical: 4),
-                      color: bot.isIdle 
-                          ? Colors.green.shade50 
+                      color: bot.isIdle
+                          ? Colors.green.shade50
                           : Colors.red.shade50,
                       child: ListTile(
                         leading: Icon(

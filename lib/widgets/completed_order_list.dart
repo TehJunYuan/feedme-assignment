@@ -3,8 +3,11 @@ import '../models/order.dart';
 
 class CompletedOrderList extends StatelessWidget {
   final List<Order> completedOrders;
-  
-  const CompletedOrderList({Key? key, required this.completedOrders}) : super(key: key);
+
+  const CompletedOrderList({
+    super.key,
+    required this.completedOrders,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,8 @@ class CompletedOrderList extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey.shade300)),
                 ),
                 child: Row(
                   children: [
