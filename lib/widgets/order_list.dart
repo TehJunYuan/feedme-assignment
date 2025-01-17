@@ -52,9 +52,9 @@ class OrderList extends StatelessWidget {
                     return Card(
                       elevation: 2,
                       margin: const EdgeInsets.symmetric(vertical: 4),
-                      color: order.type == 'VIP'
-                          ? Colors.amber.shade50
-                          : Colors.grey.shade50,
+                      color: order.status == 'PROCESSING'
+                          ? Colors.orange.shade50
+                          : (Colors.grey.shade50),
                       child: SizedBox(
                         height: 120,
                         child: Column(

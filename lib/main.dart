@@ -51,25 +51,33 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void addNormalOrder() {
-    setState(() {
-      orders.add(Order(
-        id: _uuid.v4(),
-        orderNumber: orderNumberCounter++,
-        type: 'Normal',
-      ));
-      processOrders();
-    });
-  }
-
   void addVIPOrder() {
     setState(() {
+      // Find the last VIP order index
+      int lastVipIndex = orders.lastIndexWhere((order) => order.type == 'VIP');
+
       final vipOrder = Order(
         id: _uuid.v4(),
         orderNumber: orderNumberCounter++,
         type: 'VIP',
       );
-      orders.add(vipOrder);
+
+      // Insert after the last VIP order, or at the beginning if no VIP orders
+      orders.insert(lastVipIndex + 1, vipOrder);
+      processOrders();
+    });
+  }
+
+  void addNormalOrder() {
+    setState(() {
+      final normalOrder = Order(
+        id: _uuid.v4(),
+        orderNumber: orderNumberCounter++,
+        type: 'Normal',
+      );
+
+      // Always add normal orders at the end
+      orders.add(normalOrder);
       processOrders();
     });
   }
@@ -87,73 +95,46 @@ class _MyHomePageState extends State<MyHomePage> {
         final bot = bots.removeLast();
 
         if (bot.currentOrder != null) {
+          // Cancel the timer
           botTimers[bot.id]?.cancel();
           botTimers.remove(bot.id);
 
+          // Just update the status back to PENDING
           bot.currentOrder!.status = 'PENDING';
-
-          // Find the correct position to insert the order based on order number
-          if (bot.currentOrder!.type == 'VIP') {
-            int insertIndex = 0;
-            // Find the correct position among VIP orders
-            for (int i = 0; i < orders.length; i++) {
-              if (orders[i].type == 'VIP') {
-                if (orders[i].orderNumber > bot.currentOrder!.orderNumber) {
-                  break;
-                }
-                insertIndex = i + 1;
-              }
-            }
-            orders.insert(insertIndex, bot.currentOrder!);
-          } else {
-            // For normal orders, find position after all VIP orders
-            int lastVipIndex =
-                orders.lastIndexWhere((order) => order.type == 'VIP');
-            int insertIndex = lastVipIndex + 1;
-
-            // Find correct position among normal orders
-            for (int i = insertIndex; i < orders.length; i++) {
-              if (orders[i].orderNumber > bot.currentOrder!.orderNumber) {
-                insertIndex = i;
-                break;
-              }
-              if (i == orders.length - 1) {
-                insertIndex = orders.length;
-              }
-            }
-
-            orders.insert(insertIndex, bot.currentOrder!);
-          }
+          bot.currentOrder = null;
         }
       });
     }
   }
 
   void processOrders() {
-    orders.sort((a, b) {
-      if (a.type == 'VIP' && b.type != 'VIP') return -1;
-      if (a.type != 'VIP' && b.type == 'VIP') return 1;
-      return 0;
-    });
-
+    // Find an idle bot and the first pending order
     for (final bot in bots) {
-      if (bot.isIdle && orders.isNotEmpty) {
-        final order = orders.removeAt(0);
-        bot.isIdle = false;
-        bot.currentOrder = order;
+      if (bot.isIdle) {
+        final pendingOrderIndex =
+            orders.indexWhere((order) => order.status == 'PENDING');
 
-        botTimers[bot.id]?.cancel();
+        if (pendingOrderIndex != -1) {
+          final order = orders[pendingOrderIndex];
 
-        botTimers[bot.id] = Timer(Duration(seconds: 10), () {
-          setState(() {
-            order.status = 'COMPLETE';
-            completedOrders.add(order);
-            bot.isIdle = true;
-            bot.currentOrder = null;
-            botTimers.remove(bot.id);
-            processOrders();
+          order.status = 'PROCESSING';
+          bot.isIdle = false;
+          bot.currentOrder = order;
+
+          botTimers[bot.id]?.cancel();
+
+          botTimers[bot.id] = Timer(Duration(seconds: 10), () {
+            setState(() {
+              orders.remove(order);
+              order.status = 'COMPLETE';
+              completedOrders.add(order);
+              bot.isIdle = true;
+              bot.currentOrder = null;
+              botTimers.remove(bot.id);
+              processOrders();
+            });
           });
-        });
+        }
       }
     }
   }
