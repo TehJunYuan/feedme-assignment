@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         orderNumber: orderNumberCounter++,
         type: 'VIP',
       );
-      orders.insert(0, vipOrder);
+      orders.add(vipOrder);
       processOrders();
     });
   }
@@ -91,7 +91,39 @@ class _MyHomePageState extends State<MyHomePage> {
           botTimers.remove(bot.id);
 
           bot.currentOrder!.status = 'PENDING';
-          orders.add(bot.currentOrder!);
+
+          // Find the correct position to insert the order based on order number
+          if (bot.currentOrder!.type == 'VIP') {
+            int insertIndex = 0;
+            // Find the correct position among VIP orders
+            for (int i = 0; i < orders.length; i++) {
+              if (orders[i].type == 'VIP') {
+                if (orders[i].orderNumber > bot.currentOrder!.orderNumber) {
+                  break;
+                }
+                insertIndex = i + 1;
+              }
+            }
+            orders.insert(insertIndex, bot.currentOrder!);
+          } else {
+            // For normal orders, find position after all VIP orders
+            int lastVipIndex =
+                orders.lastIndexWhere((order) => order.type == 'VIP');
+            int insertIndex = lastVipIndex + 1;
+
+            // Find correct position among normal orders
+            for (int i = insertIndex; i < orders.length; i++) {
+              if (orders[i].orderNumber > bot.currentOrder!.orderNumber) {
+                insertIndex = i;
+                break;
+              }
+              if (i == orders.length - 1) {
+                insertIndex = orders.length;
+              }
+            }
+
+            orders.insert(insertIndex, bot.currentOrder!);
+          }
         }
       });
     }
