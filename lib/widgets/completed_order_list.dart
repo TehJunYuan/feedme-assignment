@@ -14,9 +14,9 @@ class CompletedOrderList extends StatelessWidget {
     return Expanded(
       child: Card(
         elevation: 4,
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
@@ -24,7 +24,7 @@ class CompletedOrderList extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 decoration: BoxDecoration(
                   border:
                       Border(bottom: BorderSide(color: Colors.grey.shade300)),
@@ -32,7 +32,7 @@ class CompletedOrderList extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.task_alt, color: Colors.green, size: 16),
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Text(
                       'COMPLETED ORDERS',
                       style: TextStyle(
@@ -51,18 +51,73 @@ class CompletedOrderList extends StatelessWidget {
                     final order = completedOrders[index];
                     return Card(
                       elevation: 2,
-                      margin: EdgeInsets.symmetric(vertical: 4),
+                      margin: const EdgeInsets.symmetric(vertical: 4),
                       color: Colors.green.shade50,
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
+                      child: SizedBox(
+                        height: 120,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 70,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        right: BorderSide(
+                                            color: Colors.grey.shade300),
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Order #${order.orderNumber} (${order.type})',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              color: Colors.grey.shade300,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    order.id,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.grey,
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        title: Text(
-                          'Order #${order.id} (${order.type})',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text('Status: ${order.status}'),
                       ),
                     );
                   },

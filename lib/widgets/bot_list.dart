@@ -67,7 +67,7 @@ class BotList extends StatelessWidget {
                         subtitle: Text(
                           bot.isIdle
                               ? 'Status: IDLE'
-                              : 'Processing Order #${bot.currentOrder!.id}',
+                              : 'Processing Order #${bot.currentOrder!.orderNumber}',
                         ),
                       ),
                     );

@@ -5,6 +5,7 @@ import 'models/bot.dart';
 import 'widgets/order_list.dart';
 import 'widgets/bot_list.dart';
 import 'widgets/completed_order_list.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,10 +38,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _uuid = const Uuid();
   List<Order> orders = [];
   List<Order> completedOrders = [];
   List<Bot> bots = [];
-  int orderIdCounter = 1;
+  int orderNumberCounter = 1;
   Map<int, Timer> botTimers = {};
 
   @override
@@ -51,14 +53,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addNormalOrder() {
     setState(() {
-      orders.add(Order(id: orderIdCounter++, type: 'Normal'));
+      orders.add(Order(
+        id: _uuid.v4(),
+        orderNumber: orderNumberCounter++,
+        type: 'Normal',
+      ));
       processOrders();
     });
   }
 
   void addVIPOrder() {
     setState(() {
-      final vipOrder = Order(id: orderIdCounter++, type: 'VIP');
+      final vipOrder = Order(
+        id: _uuid.v4(),
+        orderNumber: orderNumberCounter++,
+        type: 'VIP',
+      );
       orders.insert(0, vipOrder);
       processOrders();
     });
